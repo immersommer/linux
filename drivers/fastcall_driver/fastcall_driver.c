@@ -13,7 +13,8 @@ MODULE_DESCRIPTION(
 	"An example device driver which adds some fastcalls for testing and benchmarking.");
 
 #define FCE_DEVICE_NAME "fastcall-examples"
-#define FCE_COMMAND_FASTCALL_REGISTRATION 0
+#define WR_VALUE 0
+#define RD_VALUE 1
 
 static dev_t fce_dev;
 static struct cdev *fce_cdev;
@@ -45,11 +46,17 @@ static long fce_ioctl(struct file *file, unsigned int cmd, unsigned long args)
     struct mesg msg;
 
 	switch (cmd) {
-	case FCE_COMMAND_FASTCALL_REGISTRATION:
-		pr_info("fce_ioctl: the cmd is FCE_COMMAND_FASTCALL_REGISTRATION\n");
+	case WR_VALUE:
+		pr_info("fce_ioctl: the cmd is WR_VALUE\n");
 		copy_from_user(&msg, args, sizeof(msg));
 		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
-		ret = fastcall_register(msg.address, (unsigned long)msg.size);
+		ret = fastcall_write(msg.address, (unsigned long)msg.size);
+		break;
+	case RD_VALUE:
+		pr_info("fce_ioctl: the cmd is RD_VALUE\n");
+		copy_to_user(args, &msg, sizeof(msg));
+		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
+		ret = fastcall_read(msg.address, (unsigned long)msg.size);
 		break;
     default:
 		pr_info("fce_ioctl: the input cmd didn't get any match\n");
