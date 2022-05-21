@@ -32,11 +32,6 @@ struct mesg {
  */
 static int fce_open(struct inode *inode, struct file *file)
 {
-	// TODO decide if only device should only be opened writable
-	// if (!(file->f_mode & FMODE_WRITE)) {
-	// 	return -EACCES;
-	// }
-
 	return 0;
 }
 
@@ -48,15 +43,13 @@ static long fce_ioctl(struct file *file, unsigned int cmd, unsigned long args)
 	switch (cmd) {
 	case WR_VALUE:
 		pr_info("fce_ioctl: the cmd is WR_VALUE\n");
-		copy_from_user(&msg, args, sizeof(msg));
-		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
 		ret = fastcall_write(msg.address, (unsigned long)msg.size);
+		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
 		break;
 	case RD_VALUE:
 		pr_info("fce_ioctl: the cmd is RD_VALUE\n");
-		copy_to_user(args, &msg, sizeof(msg));
-		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
 		ret = fastcall_read(msg.address, (unsigned long)msg.size);
+		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
 		break;
     default:
 		pr_info("fce_ioctl: the input cmd didn't get any match\n");
