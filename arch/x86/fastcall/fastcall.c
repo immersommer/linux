@@ -54,8 +54,6 @@ int fastcall_read(unsigned long __user user_addr, unsigned long len)
 	}
   	printk("I got: %zu bytes of memory\n", ksize(address));
 
-	memset(user_addr, 'F', len);
-
 	res = copy_from_user(address, user_addr, len);
 	printk("rd_res = %d\n", res);
 

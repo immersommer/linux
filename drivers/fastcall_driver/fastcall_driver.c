@@ -43,13 +43,13 @@ static long fce_ioctl(struct file *file, unsigned int cmd, unsigned long args)
 	switch (cmd) {
 	case WR_VALUE:
 		pr_info("fce_ioctl: the cmd is WR_VALUE\n");
-		ret = fastcall_write(msg.address, (unsigned long)msg.size);
-		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
+		ret = fastcall_write(args, (unsigned long)sizeof(args));
+		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", sizeof(args), args);
 		break;
 	case RD_VALUE:
 		pr_info("fce_ioctl: the cmd is RD_VALUE\n");
-		ret = fastcall_read(msg.address, (unsigned long)msg.size);
-		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", msg.size, msg.address);
+		ret = fastcall_read(args, (unsigned long)sizeof(args));
+		pr_info("fce_ioctl: struc mes size: %zu, address: %lu\n", sizeof(args), args);
 		break;
     default:
 		pr_info("fce_ioctl: the input cmd didn't get any match\n");
